@@ -1,35 +1,26 @@
 import csv
 import numpy as np
-from typing import Set,Tuple, List
-import torch
-import torch.utils
-import torch.utils.data
-import torch.nn as nn
-import torchvision
-NoneType = type(None)
 import matplotlib.pyplot as plt
-from IPython.display import display, clear_output
-from PIL import Image
-import torchvision.transforms.functional as TF
-from torchvision.models import vgg11
-from torchvision.models import mobilenet_v2
-import torchvision.transforms as transforms
-import time
+from typing import Set, Tuple, List
 
-def plot_data(csv_file_path:str):
+    with open(csv_file_path, 'r') as result_csv:
+        csv_reader = csv.reader(result_csv, delimiter=',')
+        next(csv_reader)
+        for row in csv_reader:
+            results.append(row)
 
-results = []
-with open(csv_file_path) as result_csv:
-     csv_reader = csv.reader(result_csv, delimiter=',')
-     next(csv_reader)
-     for row in csv_reader:
-         results.append(row)
+    # Convert list of string rows to a float NumPy array
+    results = np.stack(results).astype(float)
 
-results = np.stack(results).astype(float)
+    # Plot the data: results[:, 0] is Precision, results[:, 1] is Recall
+    plt.plot(results[:, 0], results[:, 1])
+    plt.ylim([-0.05, 1.05])
+    plt.xlim([-0.05, 1.05])
 
-plt.plot(results[:, 0], results[:, 1])
-plt.ylim([-0.05, 1.05])
-plt.xlim([-0.05, 1.05])
+    plt.xlabel('Precision')
+    plt.ylabel('Recall')
+
+    plt.show()
 
 plt.xlabel('Precision')
 plt.ylabel('Recall')
