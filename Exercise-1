@@ -1,6 +1,6 @@
 import csv
 import numpy as np
-from typing import Set,Tuple, List
+from typing import Set, Tuple, List
 import torch
 import torch.utils
 import torch.utils.data
@@ -18,15 +18,14 @@ import time
 
 from typing import Set
 
-def id_to_fruit(fruit_id: int, fruits: Set[str]) -> str
-"""
-converts fruit name by changing set to sorted list and accessing index
-"""
-sorted_fruits = sorted(list(fruits))
+def id_to_fruit(fruit_id: int, fruits: Set[str]) -> str: 
+    
+    sorted_fruits = sorted(list(fruits)) 
 
-if 0<= fruit_id < len(sorted_fruits):
-   return sorted_fruits[fruit_id]
+    if 0 <= fruit_id < len(sorted_fruits): 
+        return sorted_fruits[fruit_id] 
 
-raise RuntimeError(f"Fruit with id {fruit_id} does not exist")
+    raise RuntimeError(f"Fruit with id {fruit_id} does not exist") 
 
-print(id_to_fruit(4, ["apple", "orange", "melon", "kiwi", "strawberry"]))
+
+print(id_to_fruit(4, {"apple", "orange", "melon", "kiwi", "strawberry"})) 
