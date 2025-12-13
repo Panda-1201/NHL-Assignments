@@ -1,36 +1,4 @@
 def train_gan(batch_size: int = 32, num_epochs: int = 100, device: str = "cuda:0" if torch.cuda.is_available() else "cpu"):
-    """
-    The method trains a Generative Adversarial Network and is based on:
-    https://realpython.com/generative-adversarial-networks/
-
-    The Generator network tries to generate convincing images of handwritten digits.
-    The Discriminator needs to detect if the image was created by the Generater or if the image is a real image from
-    a known dataset (MNIST).
-    If both the Generator and the Discriminator are optimized, the Generator is able to create images that are difficult
-    to distinguish from real images. This is goal of a GAN.
-
-    This code produces the expected results at first attempt at about 50 epochs.
-
-    :param batch_size: The number of images to train in one epoch.
-    :param num_epochs: The number of epochs to train the gan.
-    :param device: The computing device to use. If CUDA is installed and working then `cuda:0` is chosen
-        otherwise 'cpu' is chosen. Note: Training a GAN on the CPU is very slow.
-
-    **This method is part of a series of debugging exercises.**
-    **Each Python method of this series contains bug that needs to be found.**
-
-    It contains at least two bugs: one structural bug and one cosmetic bug. Both bugs are from the original tutorial.
-
-    | ``1   Changing the batch_size from 32 to 64 triggers the structural bug.``
-    | ``2   Can you also spot the cosmetic bug?``
-    | ``Note: to fix this bug a thorough understanding of GANs is not necessary.``
-
-    Change the batch size to 64 to trigger the bug with message:
-    ValueError: "Using a target size (torch.Size([128, 1])) that is different to the input size (torch.Size([96, 1])) is deprecated. Please ensure they have the same size."
-
-    >>> train_gan(batch_size=32, num_epochs=100)
-    """
-    # Add/adjust code.
 
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
 
@@ -80,19 +48,19 @@ def train_gan(batch_size: int = 32, num_epochs: int = 100, device: str = "cuda:0
     for epoch in range(num_epochs):
         for n, (real_samples, mnist_labels) in enumerate(train_loader):
         
-           # Dynamic batch size (structural bug)
-           current_batch_size = real_samples.size(0)
-           
-           # Data for training the discriminator
+            # Dynamic batch size (structural bug)
+            current_batch_size = real_samples.size(0)
+            
+            # Data for training the discriminator
             real_samples = real_samples.to(device=device)
             
-           # Structural big fix
+            # Structural big fix
             real_samples_labels = torch.ones((current_batch_size, 1)).to(device=device)
-           # Structural big fix
+            # Structural big fix
             latent_space_samples = torch.randn((current_batch_size, 100)).to(device=device)
-           
+            
             generated_samples = generator(latent_space_samples)
-           # Structural big fix
+            # Structural big fix
             generated_samples_labels = torch.zeros((current_batch_size, 1)).to(device=device)
             
             all_samples = torch.cat((real_samples, generated_samples))
@@ -110,8 +78,8 @@ def train_gan(batch_size: int = 32, num_epochs: int = 100, device: str = "cuda:0
 
             # Training the generator
             generator.zero_grad()
-            # Structural big fix
-            latent_space_samples = torch_randn((current_batch_size. 100)).to(device=device)
+            # Structural big fix (FIXED TYPO HERE: torch.randn and comma)
+            latent_space_samples = torch.randn((current_batch_size, 100)).to(device=device)
             
             generated_samples = generator(latent_space_samples)
             output_discriminator_generated = discriminator(generated_samples)
@@ -120,7 +88,7 @@ def train_gan(batch_size: int = 32, num_epochs: int = 100, device: str = "cuda:0
             optimizer_generator.step()
 
             # Show loss and samples generated
-            if n == batch_size - 1:
+            if n == len(train_loader) - 1: # FIXED: Check against len(train_loader) - 1 to ensure it runs on the last batch of the epoch
                 name = f"Generate images\n Epoch: {epoch} Loss D.: {loss_discriminator:.2f} Loss G.: {loss_generator:.2f}"
                 generated_samples = generated_samples.detach().cpu().numpy()
                 fig = plt.figure()
